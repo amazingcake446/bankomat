@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-const Bank = ({total}) => {
+const Bank = ({balance}) => {
 
-    let [amount, setAmount] = useState(1000000)
     
-
     return (
         <div>
-            <h1>BankAccount: {amount.toFixed(1)}</h1>
+            <h1>BankAccount: {balance.toFixed(1)}</h1>
         </div>
     )
 }

@@ -5,7 +5,7 @@ function Atm() {
 
     const [total, setTotal] = useState(0)
     const [currency, setCurrency] = useState(false)
-
+    const [balance, setBalance] = useState(1000)
 
     useEffect(() => {
         console.log('Booting up atm...')
@@ -26,40 +26,55 @@ function Atm() {
 
     const addToTotal = (e) => {
         setTotal(total + parseInt(e.target.value))
-        console.log(total);
+    
     }
 
-    const handleChange = () => {
-        if (currency) {
-            console.log('if', currency)
+    const handleChange = (e) => {
+        
+        if (e.target.value === 'sek') {         
             setTotal(total * 10.15);
+            setBalance(balance * 10.15)
             setCurrency(!currency)
 
-        } else {
-            console.log('else', currency)
+        } else {            
             setCurrency(!currency)
             setTotal(total / 10.15)
-
+            setBalance(balance / 10.15)
+            
         }
+        
 
 
     }
 
-    const deposit = (value) => {
-        setTotal(0)
+    const deposit = () => {
+       setBalance(balance + total)
+       setTotal(0);
+       
+    }
+    
+    const withdraw = () => {
+        if(total > balance) {
+            alert('balance to low, try smaller amount')
+            setTotal(0)
+        } else {
+            setBalance(balance - total)
+            setTotal(0)
+        }
+       
     }
 
     return (
         <div>
-            <Bank total={total}/> 
+            <Bank balance={balance} handleChange={handleChange}/> 
         <div className='calculator'>
-            <div type='text' className='calculator-screen' value={total} disabled>{total.toFixed(1)} </div>
+            <div type='text' className='calculator-screen' value={total} disabled>{currency ? `${total.toFixed(1)} EUR`: `${total.toFixed(1)} SEK`} </div>
 
             <div className='calculator-keys'>
-                <button type="button" class="operator" value="100" onClick={addToTotal}>100</button>
-                <button type="button" class="operator" value="500" onClick={addToTotal}>500</button>
-                <button type="button" class="operator" value="1000" onClick={addToTotal}>1000</button>
-                <button type="button" class="operator" value='sek' onClick={handleChange}>SEK/EURO</button>
+                <button type="button" class="operator" value={currency ? '10' : '100'} onClick={addToTotal}>{currency ? '10': `100`}</button>
+                <button type="button" class="operator" value={currency ? '50' : '500'} onClick={addToTotal}>{currency ? '50': `500`}</button>
+                <button type="button" class="operator" value={currency ? '100' : '1000'} onClick={addToTotal}>{currency ? '100': `1000`}</button>
+                <button type="button" class="operator" value={currency ? 'sek' : 'euro'} onClick={handleChange}>{currency ? 'to SEK': 'to EUR'}</button>
                 <button type='button' value='7'>
                     7
         </button>
@@ -96,11 +111,11 @@ function Atm() {
                 <button type='button' className='decimal' value='.'>
                     .
         </button>
-                <button type='button' className='all-clear' value='all-clear'>
-                    C
+                <button type='button' onClick={deposit} className='all-clear' value='all-clear'>
+                    Deposit
         </button>
 
-                <button type='button' onClick={deposit} className='equal-sign' value='='>
+                <button type='button' onClick={withdraw} className='equal-sign' value='='>
                     Withdraw
         </button>
             </div>
